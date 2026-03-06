@@ -1,0 +1,116 @@
+.findings-summary {
+  margin-top: 16px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+}
+
+.findings-summary--empty {
+  color: #6B7280;
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 24px;
+}
+
+.findings-summary-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #374151;
+  margin: 0 0 12px 0;
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.summary-table th {
+  text-align: left;
+  padding: 6px 10px;
+  background: #F3F4F6;
+  color: #6B7280;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.summary-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: top;
+  color: #374151;
+  line-height: 1.4;
+}
+
+.summary-table tr:last-child td {
+  border-bottom: none;
+}
+
+.summary-table tr:hover td {
+  background: #F9FAFB;
+}
+
+.summary-tooth-id {
+  font-family: monospace;
+  white-space: nowrap;
+}
+
+.summary-tooth-label {
+  color: #9CA3AF;
+  font-weight: 400;
+}
+
+.summary-status {
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.summary-status--present    { color: #059669; }
+.summary-status--missing    { color: #6B7280; }
+.summary-status--extracted  { color: #D97706; }
+.summary-status--not_charted { color: #9CA3AF; }
+
+.summary-none {
+  color: #D1D5DB;
+}
+
+/* ── Chart-level findings summary ── */
+.chart-findings-summary {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #374151;
+}
+
+.chart-findings-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+
+.chart-finding-item {
+  white-space: nowrap;
+}
+
+.chart-finding-label {
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.chart-finding-value {
+  color: #111827;
+}
+
+.soft-tissue-summary {
+  margin-top: 8px;
+  line-height: 1.5;
+}

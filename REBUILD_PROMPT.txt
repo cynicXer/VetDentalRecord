@@ -1,0 +1,245 @@
+Build a veterinary dental charting web app called "Veterinary Dental Record" for
+Lone Tree Veterinary Clinic (lonetree.vet). Staff use it to record dental exam
+findings and export a completed chart as a PDF. There is no database — the PDF
+is the only saved output.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- React 18 + Vite 5 (client)
+- Express 4 with helmet + compression (serves static Vite build only — no API)
+- html2canvas ^1.4.1 + jsPDF ^2.5.1 for PDF export
+- Firebase JS SDK for Google Sign-In auth
+- No UI component library — custom SVG chart, plain CSS throughout
+- Vite outDir: ../server/public
+
+Root package.json scripts: dev, build, start, install:all
+Deploy target: Firebase Hosting (project: dentalchart-bc935)
+Firebase env vars loaded from client/.env via Vite VITE_FIREBASE_* prefix
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AUTHENTICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Google Sign-In via Firebase Auth
+- Restrict to @lonetree.vet accounts only — sign out immediately if any other
+  domain signs in and show an error message
+- AuthGate component wraps the entire app; shows a branded sign-in card if not
+  authenticated
+- Signed-in user's email shown in the Toolbar alongside a Sign Out button
+- client/src/firebase.js initialises the Firebase app and exports auth +
+  googleProvider
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STATE  (ChartContext — Context + useReducer)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{
+  patientInfo: {
+    petName, ownerLastName, species ('dog'|'cat'),
+    breed, age, date, clinician, technician
+  },
+  chartFindings: { calculus, gingivitis, periodDisease },  // chart-wide grades
+  nerveBlocks:   { infraorbital: [], mandibular: [] },     // arrays of 'left'/'right'
+  softTissueNotes: '',
+  toothData: {
+    "<toothId>": {
+      status: 'present'|'missing'|'extracted'|'not_charted',
+      findings: { caries, fracture, resorption, mobility, furcation,
+                  endodontic, retainedDeciduous, supernumerary, rotation },
+      pocketDepths: { mesial, distal, buccal, palatalLingual }, // null | mm int
+      notes: ''
+    }
+  },
+  ui: { selectedTooth, isPanelOpen, exportAttempted }
+}
+
+Reducer actions: SET_SPECIES, SET_PATIENT_FIELD, SET_CHART_FINDING,
+SET_NERVE_BLOCK, SET_SOFT_TISSUE_NOTES, SELECT_TOOTH, CLOSE_PANEL,
+UPDATE_TOOTH, SET_EXPORT_ATTEMPTED, CLEAR_ALL
+
+SET_SPECIES resets toothData to fresh defaults for the new species.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PATIENT INFO FORM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Fields (all in a responsive auto-fill grid):
+  Pet Name* (text), Owner Last Name* (text), Species (Dog/Cat toggle buttons),
+  Breed* (text), Age* (text), Date (date input, defaults to today),
+  Clinician* (dropdown: Whitehouse | Divis),
+  Technician* (dropdown: None | Allen | Davis)
+
+Fields marked * are required before PDF export is allowed. If Export PDF is
+clicked with missing fields, set exportAttempted=true and highlight the empty
+fields in red.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINDINGS — TWO LEVELS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CHART_FINDINGS (recorded once per visit in ChartFindings component):
+  calculus      grade 0–4  descriptions: None/Mild/Moderate/Heavy/Severe
+  gingivitis    grade 0–3  descriptions: None/Mild/Moderate/Severe
+  periodDisease grade 0–4  descriptions: None/Stage 1–4  (default 0)
+
+Each grade has a tooltip array with clinical descriptions. Clicking an active
+grade button re-clicks it (no toggle-off for grade 0-based scales).
+
+TOOTH_FINDINGS (per tooth, in the slide-in ToothPanel):
+  caries        type 'surfaces' — multi-select toggle buttons:
+                M (Mesial), D (Distal), B (Buccal), L/P (Lingual/Palatal),
+                O (Occlusal). Value stored as array of selected surface keys.
+  fracture      select: Enamel | Uncomplicated Crown | Complicated Crown |
+                        Crown-Root | Root
+  resorption    select: Type 1 | Type 2 | Type 3   (primarily cats)
+                each option has a tooltip describing the type
+  mobility      grade 0–3  (M1–M3, with tooltips)
+  furcation     grade 0–3  (F1–F3, with tooltips)
+  endodontic    checkbox
+  retainedDeciduous checkbox
+  supernumerary checkbox
+  rotation      checkbox
+
+ChartFindings also has:
+  Infraorbital Block — Left / Right toggle buttons (multi-select)
+  Mandibular Block   — Left / Right toggle buttons (multi-select)
+  Soft Tissue Abnormalities — textarea
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOOTH COLOR CODING  (toothColors.js)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Priority (highest wins):
+  missing/extracted → gray   #C0C0C0 / stroke #888888
+  not_charted       → light gray #E8E8E8 / stroke #AAAAAA
+  severe finding    → red    #FF6B6B / stroke #CC0000
+  any finding       → yellow #FFD166 / stroke #B89000
+  no findings       → type color (see below)
+
+Severe = complicated crown fracture, crown-root fracture, any resorption,
+         or endodontic disease.
+
+Type colors (present, no findings):
+  Incisor:        fill #DBEAFE  stroke #3B82F6
+  Canine:         fill #EDE9FE  stroke #7C3AED
+  Premolar:       fill #D1FAE5  stroke #059669
+  Carnassial P4:  fill #BBF7D0  stroke #047857
+  Molar:          fill #FEF3C7  stroke #D97706
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SVG DENTAL CHART
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- viewBox width is COMPUTED at runtime from actual arch widths (not hardcoded)
+  so there is no wasted whitespace and no horizontal scrolling on tablets.
+  Formula: SVG_W = 2*MARGIN_X + maxRightWidth + gaps + maxLeftWidth
+  SVG_H = 500 (fixed). MARGIN_X = 40.
+- width="100%" so it scales to fill its container on any screen size.
+- Conventional orientation: patient's right on viewer's left.
+- Layout (4 quadrants):
+    [ Upper Right 100s ] | [ Upper Left 200s ]
+    ─────── occlusal band ───────────────────
+    [ Lower Right 400s ] | [ Lower Left 300s ]
+- UPPER_BASELINE = 195, LOWER_BASELINE = 270 (gumlines)
+- GAP between teeth = 5px
+- Left edge: rotated MAXILLARY / MANDIBULAR labels
+
+Tooth shapes from toothShapes.js (anatomical SVG bezier paths):
+  incisor:        w=16  h=26  rootH=22
+  canine:         w=22  h=52  rootH=50
+  premolar:       w=26  h=33  rootH=28
+  premolar_large: w=38  h=40  rootH=34  (carnassial, 3-cusp blade shape)
+  molar:          w=32  h=26  rootH=22
+
+Crown paths: y=0=occlusal, y=h=cervical.
+Upper teeth: translate(x, y) — crown naturally upward.
+Lower teeth: translate(x, y+h) scale(1,-1) — flips crown downward.
+Root: same flip logic from gumlineY.
+Root fill: #EDE3C8 (ivory), opacity 0.8.
+Tooth ID label: fontSize=10, fontWeight=600, below crown for upper / above for lower.
+Small dot indicator in corner when any tooth finding exists.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MODIFIED TRIADAN NUMBERING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Dog — 42 teeth:
+  Upper per side (10): I1 I2 I3 C P1 P2 P3 P4 M1 M2
+    IDs: 101–110 (right) / 201–210 (left)
+  Lower per side (11): I1 I2 I3 C P1 P2 P3 P4 M1 M2 M3
+    IDs: 301–311 (left) / 401–411 (right)
+
+Cat — 30 teeth:
+  Upper per side (8): I1 I2 I3 C P3 P4 M1  (no P1, no P2)
+    IDs: 101–104, 106–109 (right) / 201–204, 206–209 (left)
+  Lower per side (7): I1 I2 I3 C P3 P4 M1  (no P1, P2; uses 307–309/407–409)
+    IDs: 301–304, 307–309 (left) / 401–404, 407–409 (right)
+
+TOOTH_TYPES enum: INCISOR, CANINE, PREMOLAR, PREMOLAR_LARGE, MOLAR
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SLIDE-IN TOOTH PANEL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Fixed right-side panel (400px wide), slides in on tooth click
+- Local state mirrors toothData for the selected tooth; dispatches UPDATE_TOOTH
+  only on Save
+- Sections: Status (4 chips), Findings (FindingsChecklist), Pocket Depths
+  (2x2 grid: Mesial/Distal/Buccal/Lingual-Palatal, integer mm inputs),
+  Notes (textarea), Save/Cancel buttons
+- Grade buttons and select chips use Tooltip component for hover+tap descriptions
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOOLTIP COMPONENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Uses createPortal → document.body + position:fixed + getBoundingClientRect()
+  so it is never clipped by any overflow:hidden ancestor
+- Desktop: show on mouseenter, hide on mouseleave
+- Tablet/touch: tap to toggle, auto-dismiss after 4s
+- Props: text, position ('above'|'below'), children
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PDF EXPORT  (usePDFExport.js)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Add class pdf-capture-mode to #chart-export-root and document.body
+2. html2canvas(root, { scale:2, backgroundColor:'#FFFFFF', windowWidth:1200 })
+3. jsPDF landscape Letter, 10mm margins, scale image to fit
+4. Filename: OwnerLastName_PetName_YYYY-MM-DD.pdf
+5. Remove pdf-capture-mode class in finally block
+
+pdf-capture-mode CSS hides: toolbar, patient info form, panel backdrop, panel,
+inactive grade/side buttons. Active buttons become pointer-events:none.
+
+The capturable #chart-export-root contains (in order):
+  PatientInfoHeader bar → ChartFindings → DentalChart SVG →
+  ColorLegendBar → FindingsSummary table
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FINDINGS SUMMARY (below chart, in PDF)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Chart-level findings shown as inline pills: "Calculus: Heavy · Gingivitis: Mild"
+- Nerve blocks shown: "Infraorbital Block: Left & Right"
+- Soft tissue notes shown if non-empty
+- Per-tooth table: Tooth ID | Status | Findings | Pocket Depths | Notes
+- Only teeth with non-default data are included
+- Grade 0 findings are suppressed (not shown)
+- Caries shown as surface abbreviations: "M, O"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOOLBAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Left: color legend (tooth type swatches + pathology swatches)
+- Right: signed-in email, Clear All (confirm dialog), Export PDF, Sign Out
+- Required fields: petName, ownerLastName, clinician, technician, breed, age
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DEPLOYMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Firebase Hosting — project: dentalchart-bc935
+firebase.json public dir: server/public, SPA rewrite ** → /index.html
+JS/CSS files: Cache-Control immutable (content-hashed filenames from Vite)
+HTML: Cache-Control no-store
+
+Deploy command: npm run build && firebase deploy --only hosting
+Custom domain: lonetree.vet (add A records from Firebase Console → Hosting)
+
+Firebase env vars (client/.env, never committed):
+  VITE_FIREBASE_API_KEY
+  VITE_FIREBASE_AUTH_DOMAIN
+  VITE_FIREBASE_PROJECT_ID
+  VITE_FIREBASE_STORAGE_BUCKET
+  VITE_FIREBASE_MESSAGING_SENDER_ID
+  VITE_FIREBASE_APP_ID

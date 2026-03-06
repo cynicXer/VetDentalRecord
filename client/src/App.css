@@ -1,0 +1,178 @@
+/* ── Reset & Base ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: #F3F4F6;
+  color: #111;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── App Shell ─────────────────────────────────────────────────────── */
+.app-shell {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── App Header ────────────────────────────────────────────────────── */
+.app-header {
+  display: flex;
+  align-items: center;
+}
+
+.app-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1E3A5F;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ── Edit controls wrapper ─────────────────────────────────────────── */
+.app-edit-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Export root ───────────────────────────────────────────────────── */
+.chart-export-root {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ── Patient info header bar (inside export area) ─────────────────── */
+.patient-header-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  background: #F9FAFB;
+}
+
+.patient-header-field {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  border-right: 1px solid #E5E7EB;
+  flex: 1;
+  min-width: 100px;
+}
+
+.patient-header-field:last-child {
+  border-right: none;
+}
+
+.ph-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9CA3AF;
+}
+
+.ph-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111;
+  margin-top: 2px;
+}
+
+/* ── Color legend bar (inside export area) ────────────────────────── */
+.color-legend-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 16px;
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+  background: #FAFAFA;
+}
+
+.cl-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #374151;
+}
+
+.cl-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.cl-divider {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: #D1D5DB;
+  margin: 0 6px;
+  align-self: center;
+}
+
+/* ── PDF capture mode overrides ───────────────────────────────────── */
+.pdf-capture-mode .app-edit-controls {
+  display: none !important;
+}
+
+/* When body has pdf-capture-mode, hide the panel backdrop and panel */
+body.pdf-capture-mode .panel-backdrop,
+body.pdf-capture-mode .tooth-panel {
+  display: none !important;
+}
+
+/* ── Tablet: bump text sizes and weights ───────────────────────────── */
+@media (max-width: 1100px) {
+  .ph-label {
+    font-size: 0.7rem;
+  }
+
+  .ph-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .cl-item {
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+}
+
+/* ── Responsive ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 12px 8px 32px;
+  }
+
+  .patient-header-bar {
+    flex-direction: column;
+  }
+
+  .patient-header-field {
+    border-right: none;
+    border-bottom: 1px solid #E5E7EB;
+    padding: 6px 12px;
+  }
+
+  .patient-header-field:last-child {
+    border-bottom: none;
+  }
+}

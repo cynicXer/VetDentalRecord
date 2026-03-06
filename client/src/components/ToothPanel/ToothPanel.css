@@ -1,0 +1,356 @@
+/* ── Backdrop ─────────────────────────────────────────────────────── */
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 100;
+}
+
+/* ── Slide-in Panel ───────────────────────────────────────────────── */
+.tooth-panel {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  max-width: 95vw;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  transition: right 0.25s ease;
+  overflow: hidden;
+}
+
+.tooth-panel--open {
+  right: 0;
+}
+
+/* ── Header ───────────────────────────────────────────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E5E7EB;
+  background: #F9FAFB;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111;
+}
+
+.panel-tooth-id {
+  color: #2563EB;
+  font-size: 1.1rem;
+}
+
+.panel-tooth-name {
+  color: #666;
+  font-weight: 400;
+}
+
+.panel-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.panel-close-btn:hover {
+  background: #F3F4F6;
+  color: #111;
+}
+
+/* ── Body ─────────────────────────────────────────────────────────── */
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Section ──────────────────────────────────────────────────────── */
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panel-section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+}
+
+/* ── Status Chips ─────────────────────────────────────────────────── */
+.status-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #D1D5DB;
+  background: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.15s;
+}
+
+.status-chip:hover {
+  border-color: #9CA3AF;
+}
+
+.status-chip--active {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: #fff;
+}
+
+/* ── Findings ─────────────────────────────────────────────────────── */
+.findings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.finding-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.finding-label {
+  font-size: 0.82rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Grade buttons */
+.grade-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.grade-btn {
+  width: 34px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1.5px solid #D1D5DB;
+  background: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+
+.grade-btn:hover {
+  border-color: #9CA3AF;
+  background: #F9FAFB;
+}
+
+.grade-btn--active {
+  background: #1D4ED8;
+  border-color: #1D4ED8;
+  color: #fff;
+}
+
+/* Select chips */
+.select-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.select-chip {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #D1D5DB;
+  background: #fff;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.15s;
+}
+
+.select-chip:hover {
+  border-color: #9CA3AF;
+}
+
+.select-chip--active {
+  background: #0891B2;
+  border-color: #0891B2;
+  color: #fff;
+}
+
+/* Surface chips (caries multi-select) */
+.surface-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.surface-chip {
+  width: 38px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1.5px solid #D1D5DB;
+  background: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.15s;
+}
+
+.surface-chip:hover {
+  border-color: #9CA3AF;
+  background: #F9FAFB;
+}
+
+.surface-chip--active {
+  background: #D97706;
+  border-color: #D97706;
+  color: #fff;
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #2563EB;
+  cursor: pointer;
+}
+
+.checkbox-text {
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+/* ── Pocket Depths ────────────────────────────────────────────────── */
+.pocket-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pocket-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pocket-site-label {
+  font-size: 0.78rem;
+  color: #6B7280;
+}
+
+.pocket-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #111;
+  background: #fff;
+  text-align: center;
+}
+
+.pocket-input:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* Hide number input spinners */
+.pocket-input::-webkit-inner-spin-button,
+.pocket-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ── Notes ────────────────────────────────────────────────────────── */
+.notes-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #111;
+  background: #fff;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+.panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid #E5E7EB;
+  background: #F9FAFB;
+  flex-shrink: 0;
+}
+
+/* ── Shared Buttons ───────────────────────────────────────────────── */
+.btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.btn-primary {
+  background: #2563EB;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #1D4ED8;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #374151;
+  border: 1.5px solid #D1D5DB;
+}
+
+.btn-secondary:hover {
+  background: #F3F4F6;
+}

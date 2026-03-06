@@ -1,0 +1,43 @@
+.tt-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tt-box {
+  position: fixed; /* portal + fixed escapes all overflow clipping */
+  background: #1E293B;
+  color: #F8FAFC;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  padding: 5px 9px;
+  border-radius: 5px;
+  white-space: normal;
+  width: max-content;
+  max-width: 220px;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* top/left/transform are set via inline style from getBoundingClientRect */
+
+/* Arrow — positioned relative to the tooltip box itself */
+.tt-box--above::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1E293B;
+}
+
+.tt-box--below::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: #1E293B;
+}

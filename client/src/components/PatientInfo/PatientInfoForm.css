@@ -1,0 +1,99 @@
+.patient-info-form {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.patient-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.pif-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pif-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+}
+
+.pif-input {
+  padding: 7px 10px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #111;
+  background: #fff;
+  font-family: inherit;
+}
+
+.pif-input:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.pif-input--error {
+  border-color: #DC2626;
+  background: #FFF5F5;
+}
+
+select.pif-input {
+  appearance: auto; /* keep native dropdown arrow */
+  cursor: pointer;
+}
+
+.pif-input--error:focus {
+  border-color: #DC2626;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+}
+
+.pif-required {
+  color: #DC2626;
+  font-weight: 700;
+}
+
+/* ── Species Toggle ─── */
+.species-toggle {
+  display: flex;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.species-btn {
+  flex: 1;
+  padding: 7px 0;
+  border: none;
+  background: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: #374151;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.species-btn:first-child {
+  border-right: 1px solid #D1D5DB;
+}
+
+.species-btn:hover {
+  background: #F3F4F6;
+}
+
+.species-btn--active {
+  background: #2563EB;
+  color: #fff;
+}
+
+.species-btn--active:hover {
+  background: #1D4ED8;
+}

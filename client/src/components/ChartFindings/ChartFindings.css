@@ -1,0 +1,185 @@
+.chart-findings {
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  overflow: visible;  /* allow tooltips to escape */
+}
+
+.cf-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 16px 8px;
+  border-bottom: 1px solid #F3F4F6;
+  background: #F9FAFB;
+}
+
+.cf-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #374151;
+}
+
+.cf-subtitle {
+  font-size: 0.7rem;
+  color: #9CA3AF;
+}
+
+.cf-body {
+  padding: 12px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Grade row ── */
+.cf-grades-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+.cf-finding {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: visible;
+}
+
+.cf-finding-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.cf-grade-buttons {
+  display: flex;
+  gap: 5px;
+  overflow: visible;
+}
+
+.cf-grade-btn {
+  width: 32px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1.5px solid #D1D5DB;
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.cf-grade-btn:hover {
+  border-color: #9CA3AF;
+  background: #F9FAFB;
+}
+
+.cf-grade-btn--active {
+  background: #1D4ED8;
+  border-color: #1D4ED8;
+  color: #fff;
+}
+
+.cf-selected-desc {
+  font-size: 0.7rem;
+  color: #6B7280;
+  font-style: italic;
+}
+
+/* ── Nerve blocks ── */
+.cf-nerve-blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.cf-nerve-block-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cf-side-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.cf-side-btn {
+  padding: 4px 14px;
+  border-radius: 6px;
+  border: 1.5px solid #D1D5DB;
+  background: #fff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.cf-side-btn:hover {
+  border-color: #9CA3AF;
+  background: #F9FAFB;
+}
+
+.cf-side-btn--active {
+  background: #0891B2;
+  border-color: #0891B2;
+  color: #fff;
+}
+
+/* ── Soft tissue textarea ── */
+.cf-soft-tissue {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cf-textarea {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #111;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.cf-textarea:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* ── PDF capture: hide grade buttons; show only selected values ── */
+.pdf-capture-mode .cf-grade-btn:not(.cf-grade-btn--active) {
+  display: none !important;
+}
+
+.pdf-capture-mode .cf-grade-btn--active {
+  pointer-events: none;
+}
+
+.pdf-capture-mode .cf-textarea {
+  pointer-events: none;
+  border-color: #E5E7EB;
+  resize: none;
+}
+
+.pdf-capture-mode .cf-side-btn:not(.cf-side-btn--active) {
+  display: none !important;
+}
+
+.pdf-capture-mode .cf-side-btn--active {
+  pointer-events: none;
+}

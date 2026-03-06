@@ -1,0 +1,129 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+}
+
+/* ── Legend ─── */
+.legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.legend-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+  margin-right: 4px;
+}
+
+.legend-divider {
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  background: #D1D5DB;
+  margin: 0 6px;
+  vertical-align: middle;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: #374151;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* ── Right side (error + actions) ─── */
+.toolbar-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.toolbar-error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #DC2626;
+  font-weight: 500;
+}
+
+/* ── Actions ─── */
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.toolbar-btn {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.toolbar-btn--primary {
+  background: #2563EB;
+  color: #fff;
+}
+
+.toolbar-btn--primary:hover {
+  background: #1D4ED8;
+}
+
+.toolbar-btn--danger {
+  background: #fff;
+  color: #DC2626;
+  border: 1.5px solid #FCA5A5;
+}
+
+.toolbar-btn--danger:hover {
+  background: #FEF2F2;
+}
+
+.toolbar-btn--secondary {
+  background: #fff;
+  color: #374151;
+  border: 1.5px solid #D1D5DB;
+}
+
+.toolbar-btn--secondary:hover {
+  background: #F3F4F6;
+}
+
+.toolbar-user {
+  font-size: 0.78rem;
+  color: #6B7280;
+  align-self: center;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── PDF capture mode: hide toolbar ─── */
+.pdf-capture-mode .toolbar {
+  display: none !important;
+}
