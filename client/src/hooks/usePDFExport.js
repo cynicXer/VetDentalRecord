@@ -28,14 +28,14 @@ export function usePDFExport() {
 
     try {
       const canvas = await html2canvas(root, {
-        scale: 2,
+        scale: 1.5,
         backgroundColor: '#FFFFFF',
         windowWidth: 1200,
         useCORS: true,
         logging: false,
       });
 
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.85);
 
       // Landscape Letter: 279.4mm × 215.9mm
       const pdf = new jsPDF({
@@ -59,7 +59,7 @@ export function usePDFExport() {
       const offsetX = margin + (availW - drawW) / 2;
       const offsetY = margin + (availH - drawH) / 2;
 
-      pdf.addImage(imgData, 'PNG', offsetX, offsetY, drawW, drawH);
+      pdf.addImage(imgData, 'JPEG', offsetX, offsetY, drawW, drawH);
 
       // Build filename: OwnerLastName_PetName_YYYY-MM-DD.pdf
       const safeOwner = (patientInfo?.ownerLastName || 'Owner').replace(/[^a-z0-9]/gi, '_');
