@@ -1,0 +1,16 @@
+{
+  "name": "vetdental-functions",
+  "private": true,
+  "main": "index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "sync": "cp ../server/daysmart.js ./daysmart.js"
+  },
+  "dependencies": {
+    "express": "^4.22.3",
+    "firebase-admin": "^14.5.0",
+    "firebase-functions": "^7.4.0"
+  }
+}
