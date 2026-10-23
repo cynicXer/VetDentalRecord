@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useChart } from '../../context/ChartContext.jsx';
+import { useChart, confirmSpeciesChange } from '../../context/ChartContext.jsx';
 import {
   searchClients,
   toPatientRows,
@@ -9,7 +9,7 @@ import {
 import './ClientLookup.css';
 
 export default function ClientLookup() {
-  const { dispatch } = useChart();
+  const { state, dispatch } = useChart();
   const [query, setQuery] = useState('');
   const [rows, setRows] = useState([]);
   const [status, setStatus] = useState('idle'); // idle | loading | done | error
@@ -62,11 +62,15 @@ export default function ClientLookup() {
 
   function selectRow(row) {
     const { client, patient } = row;
+    const species = patient ? speciesFromLabel(patient.speciesLabel) : null;
+    const changeSpecies = species && species !== state.patientInfo.species;
+    // Cancelling leaves the form untouched so the chart and patient info stay consistent.
+    if (changeSpecies && !confirmSpeciesChange(state, species)) return;
+
     setField('ownerLastName', client.lastName || '');
 
     if (patient) {
-      const species = speciesFromLabel(patient.speciesLabel);
-      if (species) dispatch({ type: 'SET_SPECIES', payload: species });
+      if (changeSpecies) dispatch({ type: 'SET_SPECIES', payload: species });
       setField('petName', patient.name || '');
       setField('breed', patient.breed || '');
       setField('age', ageFromBirthdate(patient.birthdate));

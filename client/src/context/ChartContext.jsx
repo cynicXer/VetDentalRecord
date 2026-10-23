@@ -16,6 +16,25 @@ function buildToothData(species) {
   return Object.fromEntries(ids.map(id => [id, makeDefaultTooth()]));
 }
 
+// True if any tooth differs from its default (i.e. switching species would lose work).
+export function hasToothData(toothData) {
+  const blank = JSON.stringify(makeDefaultTooth());
+  return Object.values(toothData).some(t => JSON.stringify(t) !== blank);
+}
+
+/**
+ * Ask before a species change that would wipe charted teeth.
+ * Returns true if the caller should go ahead and dispatch SET_SPECIES.
+ */
+export function confirmSpeciesChange(state, species) {
+  if (state.patientInfo.species === species) return false;
+  if (!hasToothData(state.toothData)) return true;
+  return window.confirm(
+    `Switching to ${species === 'cat' ? 'Cat' : 'Dog'} resets the tooth chart. ` +
+    'All tooth findings, pocket depths and notes will be lost. Continue?'
+  );
+}
+
 const initialState = {
   patientInfo: {
     petName:       '',

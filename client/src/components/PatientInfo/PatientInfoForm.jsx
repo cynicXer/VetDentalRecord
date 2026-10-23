@@ -1,4 +1,4 @@
-import { useChart } from '../../context/ChartContext.jsx';
+import { useChart, confirmSpeciesChange } from '../../context/ChartContext.jsx';
 import ClientLookup from './ClientLookup.jsx';
 import './PatientInfoForm.css';
 
@@ -19,6 +19,12 @@ export default function PatientInfoForm() {
   function inputClass(field) {
     const isError = exportAttempted && REQUIRED_FIELDS.includes(field) && !patientInfo[field].trim();
     return `pif-input${isError ? ' pif-input--error' : ''}`;
+  }
+
+  function setSpecies(species) {
+    if (confirmSpeciesChange(state, species)) {
+      dispatch({ type: 'SET_SPECIES', payload: species });
+    }
   }
 
   return (
@@ -53,14 +59,14 @@ export default function PatientInfoForm() {
             <button
               type="button"
               className={`species-btn ${patientInfo.species === 'dog' ? 'species-btn--active' : ''}`}
-              onClick={() => dispatch({ type: 'SET_SPECIES', payload: 'dog' })}
+              onClick={() => setSpecies('dog')}
             >
               Dog
             </button>
             <button
               type="button"
               className={`species-btn ${patientInfo.species === 'cat' ? 'species-btn--active' : ''}`}
-              onClick={() => dispatch({ type: 'SET_SPECIES', payload: 'cat' })}
+              onClick={() => setSpecies('cat')}
             >
               Cat
             </button>
