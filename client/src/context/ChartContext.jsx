@@ -22,6 +22,15 @@ export function hasToothData(toothData) {
   return Object.values(toothData).some(t => JSON.stringify(t) !== blank);
 }
 
+// True if anything chart-related has been entered (teeth, chart findings, nerve blocks, notes).
+export function hasChartData(state) {
+  return hasToothData(state.toothData)
+    || JSON.stringify(state.chartFindings) !== JSON.stringify(DEFAULT_CHART_FINDINGS)
+    || state.nerveBlocks.infraorbital.length > 0
+    || state.nerveBlocks.mandibular.length > 0
+    || state.softTissueNotes.trim() !== '';
+}
+
 /**
  * Ask before a species change that would wipe charted teeth.
  * Returns true if the caller should go ahead and dispatch SET_SPECIES.
@@ -110,6 +119,31 @@ function chartReducer(state, action) {
 
     case 'SET_EXPORT_ATTEMPTED': {
       return { ...state, ui: { ...state.ui, exportAttempted: true } };
+    }
+
+    case 'LOAD_PATIENT': {
+      // payload: { fields: {petName, ...}, species?: 'dog'|'cat', resetChart?: bool }
+      const { fields, species, resetChart } = action.payload;
+      const nextSpecies = species || state.patientInfo.species;
+      const base = resetChart
+        ? {
+            ...state,
+            chartFindings:   { ...DEFAULT_CHART_FINDINGS },
+            softTissueNotes: '',
+            nerveBlocks:     { infraorbital: [], mandibular: [] },
+            toothData:       buildToothData(nextSpecies),
+            ui:              { ...state.ui, selectedTooth: null, isPanelOpen: false, exportAttempted: false },
+          }
+        : state;
+      const speciesChanged = nextSpecies !== state.patientInfo.species;
+      return {
+        ...base,
+        patientInfo: { ...state.patientInfo, ...fields, species: nextSpecies },
+        ...(speciesChanged && !resetChart && {
+          toothData: buildToothData(nextSpecies),
+          ui: { ...state.ui, selectedTooth: null, isPanelOpen: false },
+        }),
+      };
     }
 
     case 'CLEAR_ALL': {

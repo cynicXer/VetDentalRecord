@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useChart, confirmSpeciesChange } from '../../context/ChartContext.jsx';
+import { useChart, confirmSpeciesChange, hasChartData } from '../../context/ChartContext.jsx';
 import {
   searchClients,
   toPatientRows,
@@ -56,25 +56,40 @@ export default function ClientLookup() {
     return () => document.removeEventListener('mousedown', onDocClick);
   }, []);
 
-  function setField(field, value) {
-    dispatch({ type: 'SET_PATIENT_FIELD', payload: { field, value } });
-  }
-
   function selectRow(row) {
     const { client, patient } = row;
-    const species = patient ? speciesFromLabel(patient.speciesLabel) : null;
-    const changeSpecies = species && species !== state.patientInfo.species;
-    // Cancelling leaves the form untouched so the chart and patient info stay consistent.
-    if (changeSpecies && !confirmSpeciesChange(state, species)) return;
-
-    setField('ownerLastName', client.lastName || '');
-
+    const current = state.patientInfo;
+    const fields = { ownerLastName: client.lastName || '' };
     if (patient) {
-      if (changeSpecies) dispatch({ type: 'SET_SPECIES', payload: species });
-      setField('petName', patient.name || '');
-      setField('breed', patient.breed || '');
-      setField('age', ageFromBirthdate(patient.birthdate));
+      fields.petName = patient.name || '';
+      fields.breed = patient.breed || '';
+      fields.age = ageFromBirthdate(patient.birthdate);
+    } else if (fields.ownerLastName !== current.ownerLastName) {
+      // New owner with no pets on file: don't leave the previous pet's details behind.
+      Object.assign(fields, { petName: '', breed: '', age: '' });
     }
+    const species = (patient && speciesFromLabel(patient.speciesLabel)) || undefined;
+
+    // A different patient is already on the form: loading this one means a new chart.
+    const hasPatient = Boolean(current.petName || current.ownerLastName);
+    const samePatient = current.ownerLastName === fields.ownerLastName
+      && (!patient || current.petName === fields.petName);
+    let resetChart = false;
+
+    if (hasPatient && !samePatient && hasChartData(state)) {
+      const newName = patient ? `${fields.petName} (${fields.ownerLastName})` : fields.ownerLastName;
+      const oldName = current.petName || current.ownerLastName;
+      if (!window.confirm(
+        `Start a new chart for ${newName}? ` +
+        `All findings charted for ${oldName} will be cleared.`
+      )) return;
+      resetChart = true;
+    } else if (species && species !== current.species && !confirmSpeciesChange(state, species)) {
+      // Cancelling leaves the form untouched so the chart and patient info stay consistent.
+      return;
+    }
+
+    dispatch({ type: 'LOAD_PATIENT', payload: { fields, species, resetChart } });
 
     setQuery('');
     setRows([]);
