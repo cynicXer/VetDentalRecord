@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
  * Hook for exporting the dental chart to a PDF.
  *
  * Usage:
- *   const { exportPDF, isExporting } = usePDFExport();
+ *   const { exportPDF } = usePDFExport();
  *   <button onClick={() => exportPDF(patientInfo)}>Export PDF</button>
  *
  * The element with id="chart-export-root" is captured.

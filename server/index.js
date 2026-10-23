@@ -1,9 +1,13 @@
 'use strict';
 
+require('dotenv').config();
+
 const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
 const path = require('path');
+
+const daysmartRouter = require('./daysmart');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,6 +18,9 @@ app.use(helmet({ contentSecurityPolicy: false }));
 
 // Gzip compression for all responses
 app.use(compression());
+
+// DaySmart Vet API proxy (keeps the clinic secret server-side)
+app.use('/api/daysmart', daysmartRouter);
 
 // Static file serving with aggressive cache headers for hashed assets
 app.use(

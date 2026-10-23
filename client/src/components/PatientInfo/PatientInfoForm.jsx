@@ -1,10 +1,11 @@
 import { useChart } from '../../context/ChartContext.jsx';
+import ClientLookup from './ClientLookup.jsx';
 import './PatientInfoForm.css';
 
 const REQUIRED_FIELDS = ['petName', 'ownerLastName', 'clinician', 'technician', 'breed', 'age'];
 
 const CLINICIANS  = ['Whitehouse', 'Divis'];
-const TECHNICIANS = ['None', 'Allen', 'Davis'];
+const TECHNICIANS = ['None', 'Aikman', 'Allen', 'Davis', 'Mastropietro'];
 
 export default function PatientInfoForm() {
   const { state, dispatch } = useChart();
@@ -22,6 +23,7 @@ export default function PatientInfoForm() {
 
   return (
     <div className="patient-info-form">
+      <ClientLookup />
       <div className="patient-info-grid">
         <div className="pif-field">
           <label className="pif-label">Pet Name <span className="pif-required">*</span></label>
